@@ -1,8 +1,5 @@
 # ERC20 Token Hardhat
 
-[![Build Status](https://github.com/Alexintw/erc20-token/actions/workflows/ci.yml/badge.svg)](https://github.com/Alexintw/erc20-token/actions)  
-[![Coverage Status](https://coveralls.io/repos/github/Alexintw/erc20-token/badge.svg)](https://coveralls.io/github/Alexintw/erc20-token)  
-
 A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation, testing, gas reporting, coverage, and Etherscan verification.
 
 ---
