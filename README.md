@@ -1,22 +1,31 @@
 # ERC20 Token Hardhat
 
-A minimal boilerplate for an ERC20 token, including compilation, local testing, deployment to Goerli/Sepolia, and Etherscan source verification.
+A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation, testing, gas reporting, coverage, and Etherscan verification.
 
 ## Features
 
 - **ERC20 Contract**  
-  - `MyToken.sol` inherits OpenZeppelin’s `ERC20`  
-  - Mints initial supply at deployment  
+  - `MyToken.sol` extends OpenZeppelin’s `ERC20` & `Ownable`  
+  - Constructor mints initial supply (scaled by decimals)  
+  - Owner-only `mint`  
+  - Public `burn`  
 - **Local Testing**  
-  - Hardhat + Mocha/Chai  
-  - Simple `transfer` test case  
-- **Deployment**  
-  - Configured for Goerli & Sepolia  
-  - Uses environment variables for RPC URLs & private key  
-- **Verification**  
-  - Etherscan source verification via Hardhat plugin  
-- **Local Network**  
-  - `npx hardhat node` for offline development  
+  - Hardhat + Mocha/Chai + Waffle matchers  
+  - Automated tests for mint, burn, transfer, edge cases  
+- **Gas Reporting**  
+  - `hardhat-gas-reporter` integration  
+  - Generates `gas-report.txt`  
+- **Coverage**  
+  - `solidity-coverage` plugin  
+  - Generates `coverage/` HTML report  
+- **Lint & Format**  
+  - `solhint` static analysis & auto-fix  
+  - Prettier with `prettier-plugin-solidity` support  
+- **Deployment & Verification**  
+  - Hardhat scripts for Local, Goerli, Sepolia  
+  - Etherscan source verification  
+- **CI**  
+  - GitHub Actions for lint, test, coverage   
 
 ## Prerequisites
 
@@ -77,7 +86,10 @@ erc20-token/
 ├── package.json            # Dependencies & npm scripts
 └── README.md               # This file
 
-## 運算流程圖
+# ERC20 Token Hardhat
+
+[![Build Status](https://github.com/Alexintw/erc20-token/actions/workflows/ci.yml/badge.svg)](https://github.com/Alexintw/erc20-token/actions)
+[![Coverage Status](https://coveralls.io/repos/github/Alexintw/erc20-token/badge.svg)](https://coveralls.io/github/Alexintw/erc20-token) 
 
 ## ERC20 Token Operation Flowchart
 
