@@ -44,7 +44,7 @@ SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_PROJECT_ID
 PRIVATE_KEY=0xYOUR_PRIVATE_KEY
 ETHERSCAN_API_KEY=YOUR_ETHERSCAN_KEY
 Note: Do not commit .env to version control. Add it to .gitignore.
-### 3.Usage
+### 3. Usage
 Compile Contracts
 npx hardhat compile
 Run Tests
@@ -64,7 +64,7 @@ After deployment, verify on Etherscan:
 npx hardhat verify --network goerli <DEPLOYED_ADDRESS> 1000000
 Replace <DEPLOYED_ADDRESS> and 1000000 (initial supply in whole tokens) accordingly.
 
-### 4.Project Structure
+### 4. Project Structure
 erc20-token/
 ├── contracts/
 │   └── MyToken.sol         # ERC20 implementation
@@ -76,7 +76,30 @@ erc20-token/
 ├── .env.example            # Sample environment variables
 ├── package.json            # Dependencies & npm scripts
 └── README.md               # This file
-### 5.Troubleshooting
+
+## 運算流程圖
+
+## ERC20 Token Operation Flowchart
+
+```mermaid
+flowchart TD
+  A[Deploy Contract] --> B[Constructor: mint initialSupply to deployer]
+  B --> C{User calls function}
+  C -->|mint(to, amount)| D[onlyOwner?]
+  D -->|Yes| E[_mint(to, amount * 10^decimals())]
+  D -->|No| F[Revert: Ownable: caller is not the owner]
+  C -->|transfer(to, amount)| G[has balance ≥ amount?]
+  G -->|Yes| H[_transfer(from, to, amount)]
+  G -->|No| I[Revert: ERC20: transfer amount exceeds balance]
+  C -->|burn(amount)| J[has balance ≥ amount?]
+  J -->|Yes| K[_burn(from, amount * 10^decimals())]
+  J -->|No| L[Revert: ERC20: burn amount exceeds balance]
+  E --> M[Emit Transfer(address(0), to, scaledAmount)]
+  H --> N[Emit Transfer(from, to, amount)]
+  K --> O[Emit Transfer(from, address(0), scaledAmount)]
+
+
+### 5. Troubleshooting
 
 Network Unreachable
 Ensure your RPC URL is correct and your network allows DNS resolution of *.infura.io.
@@ -84,7 +107,7 @@ Invalid Private Key
 Must be 0x + 64 hex characters.
 Version Mismatch
 Adjust Solidity version in hardhat.config.js to match OpenZeppelin’s pragma.
-### 6.Contributing
+### 6. Contributing
 
 Fork the project
 Create your feature branch (git checkout -b feature/foo)
@@ -92,6 +115,6 @@ Commit your changes (git commit -am 'Add some feature')
 Push to the branch (git push origin feature/foo)
 Open a Pull Request
 Run npm test before submitting
-### 7.License
+### 7. License
 
 MIT © Alex Ko
