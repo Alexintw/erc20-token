@@ -1,0 +1,1 @@
+{"contracts/MyToken.sol":{"l":{"8":18},"path":"/Users/koalex/Documents/learning_planet/erc20-token/contracts/MyToken.sol","s":{"1":18},"b":{},"f":{"1":18},"fnMap":{"1":{"name":"constructor","line":7,"loc":{"start":{"line":7,"column":4},"end":{"line":9,"column":4}}}},"statementMap":{"1":{"start":{"line":8,"column":8},"end":{"line":8,"column":39}}},"branchMap":{}}}

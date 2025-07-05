@@ -1,0 +1,7 @@
+node_modules/
+.env
+artifacts/
+cache/
+coverage/
+gas-report.txt
+npm-debug.log*
