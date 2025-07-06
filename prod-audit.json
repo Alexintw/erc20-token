@@ -1,0 +1,362 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@biconomy/gasless-messaging-sdk": {
+      "name": "@biconomy/gasless-messaging-sdk",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "cent.js",
+        "jsonwebtoken"
+      ],
+      "effects": [
+        "@biconomy/mexa"
+      ],
+      "range": "*",
+      "nodes": [
+        "node_modules/@biconomy/gasless-messaging-sdk"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "@biconomy/mexa": {
+      "name": "@biconomy/mexa",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@biconomy/gasless-messaging-sdk",
+        "axios",
+        "ethereum-tx-decoder"
+      ],
+      "effects": [],
+      "range": "*",
+      "nodes": [
+        "node_modules/@biconomy/mexa"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "axios": {
+      "name": "axios",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1097679,
+          "name": "axios",
+          "dependency": "axios",
+          "title": "Axios Cross-Site Request Forgery Vulnerability",
+          "url": "https://github.com/advisories/GHSA-wf5p-g6vw-rhxx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-352"
+          ],
+          "cvss": {
+            "score": 6.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+          },
+          "range": ">=0.8.1 <0.28.0"
+        },
+        {
+          "source": 1103617,
+          "name": "axios",
+          "dependency": "axios",
+          "title": "axios Requests Vulnerable To Possible SSRF and Credential Leakage via Absolute URL",
+          "url": "https://github.com/advisories/GHSA-jr5f-v2jv-69x6",
+          "severity": "high",
+          "cwe": [
+            "CWE-918"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<0.30.0"
+        }
+      ],
+      "effects": [
+        "@biconomy/mexa",
+        "cent.js"
+      ],
+      "range": "<=0.29.0",
+      "nodes": [
+        "node_modules/@biconomy/mexa/node_modules/axios",
+        "node_modules/cent.js/node_modules/axios"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "cent.js": {
+      "name": "cent.js",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "axios"
+      ],
+      "effects": [
+        "@biconomy/gasless-messaging-sdk"
+      ],
+      "range": "<=2.0.5",
+      "nodes": [
+        "node_modules/cent.js"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "elliptic": {
+      "name": "elliptic",
+      "severity": "critical",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1098593,
+          "name": "elliptic",
+          "dependency": "elliptic",
+          "title": "Elliptic's EDDSA missing signature length check",
+          "url": "https://github.com/advisories/GHSA-f7q4-pwc6-w24p",
+          "severity": "low",
+          "cwe": [
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": ">=4.0.0 <=6.5.6"
+        },
+        {
+          "source": 1098594,
+          "name": "elliptic",
+          "dependency": "elliptic",
+          "title": "Elliptic's ECDSA missing check for whether leading bit of r and s is zero",
+          "url": "https://github.com/advisories/GHSA-977x-g7h5-7qgw",
+          "severity": "low",
+          "cwe": [
+            "CWE-130"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": ">=2.0.0 <=6.5.6"
+        },
+        {
+          "source": 1098595,
+          "name": "elliptic",
+          "dependency": "elliptic",
+          "title": "Elliptic allows BER-encoded signatures",
+          "url": "https://github.com/advisories/GHSA-49q7-c7j4-3p7m",
+          "severity": "low",
+          "cwe": [
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+          },
+          "range": ">=5.2.1 <=6.5.6"
+        },
+        {
+          "source": 1101424,
+          "name": "elliptic",
+          "dependency": "elliptic",
+          "title": "Elliptic's verify function omits uniqueness validation",
+          "url": "https://github.com/advisories/GHSA-434g-2637-qmqr",
+          "severity": "low",
+          "cwe": [
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": "<6.5.6"
+        },
+        {
+          "source": 1102901,
+          "name": "elliptic",
+          "dependency": "elliptic",
+          "title": "Elliptic's private key extraction in ECDSA upon signing a malformed input (e.g. a string)",
+          "url": "https://github.com/advisories/GHSA-vjh7-7g9h-fjfh",
+          "severity": "critical",
+          "cwe": [
+            "CWE-200"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<=6.6.0"
+        },
+        {
+          "source": 1105750,
+          "name": "elliptic",
+          "dependency": "elliptic",
+          "title": "Valid ECDSA signatures erroneously rejected in Elliptic",
+          "url": "https://github.com/advisories/GHSA-fc9h-whq2-v747",
+          "severity": "low",
+          "cwe": [
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 4.8,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L"
+          },
+          "range": "<6.6.0"
+        }
+      ],
+      "effects": [
+        "ethers"
+      ],
+      "range": "<=6.6.0",
+      "nodes": [
+        "node_modules/ethereum-tx-decoder/node_modules/elliptic"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "ethereum-tx-decoder": {
+      "name": "ethereum-tx-decoder",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "ethers"
+      ],
+      "effects": [
+        "@biconomy/mexa"
+      ],
+      "range": ">=2.0.0",
+      "nodes": [
+        "node_modules/ethereum-tx-decoder"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "ethers": {
+      "name": "ethers",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "elliptic"
+      ],
+      "effects": [
+        "ethereum-tx-decoder"
+      ],
+      "range": "3.0.0 - 4.0.49",
+      "nodes": [
+        "node_modules/ethereum-tx-decoder/node_modules/ethers"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    },
+    "jsonwebtoken": {
+      "name": "jsonwebtoken",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1097690,
+          "name": "jsonwebtoken",
+          "dependency": "jsonwebtoken",
+          "title": "jsonwebtoken unrestricted key type could lead to legacy keys usage ",
+          "url": "https://github.com/advisories/GHSA-8cf7-32gw-wr33",
+          "severity": "high",
+          "cwe": [
+            "CWE-327"
+          ],
+          "cvss": {
+            "score": 8.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+          },
+          "range": "<=8.5.1"
+        },
+        {
+          "source": 1097694,
+          "name": "jsonwebtoken",
+          "dependency": "jsonwebtoken",
+          "title": "jsonwebtoken's insecure implementation of key retrieval function could lead to Forgeable Public/Private Tokens from RSA to HMAC",
+          "url": "https://github.com/advisories/GHSA-hjrf-2m68-5959",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-287",
+            "CWE-1259"
+          ],
+          "cvss": {
+            "score": 5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:L/A:L"
+          },
+          "range": "<=8.5.1"
+        },
+        {
+          "source": 1102458,
+          "name": "jsonwebtoken",
+          "dependency": "jsonwebtoken",
+          "title": "jsonwebtoken vulnerable to signature validation bypass due to insecure default algorithm in jwt.verify()",
+          "url": "https://github.com/advisories/GHSA-qwph-4952-7xr6",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-287",
+            "CWE-327",
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 6.4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:L/I:H/A:L"
+          },
+          "range": "<9.0.0"
+        }
+      ],
+      "effects": [
+        "@biconomy/gasless-messaging-sdk"
+      ],
+      "range": "<=8.5.1",
+      "nodes": [
+        "node_modules/jsonwebtoken"
+      ],
+      "fixAvailable": {
+        "name": "@biconomy/mexa",
+        "version": "2.0.38",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 2,
+      "moderate": 0,
+      "high": 5,
+      "critical": 1,
+      "total": 8
+    },
+    "dependencies": {
+      "prod": 216,
+      "dev": 834,
+      "optional": 168,
+      "peer": 271,
+      "peerOptional": 0,
+      "total": 1199
+    }
+  }
+}

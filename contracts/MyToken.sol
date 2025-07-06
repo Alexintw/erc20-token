@@ -1,30 +1,72 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 
-/**
- * @title MyToken
- * @dev Simple ERC20 Token example, with mintable and burnable functionality.
- */
-contract MyToken is ERC20, Ownable {
-    /**
-     * @dev Sets the values for {name} and {symbol}, mints initial supply to deployer.
-     * @param initialSupply The initial token supply in whole units (not considering decimals).
-     */
-    constructor(uint256 initialSupply) ERC20("MyToken", "MTK") {
-        // Mint the initial supply to the contract deployer, scaled by decimals()
-        _mint(_msgSender(), initialSupply * (10 ** decimals()));
+contract MyToken is ERC20, ERC20Permit, ERC2771Context, Ownable {
+    /// @dev fee in basis points (50 = 0.5%)
+    uint256 public burnRate = 50;
+
+    constructor(uint256 initialSupply, address forwarder)
+        ERC20("MyToken", "MTK")
+        ERC20Permit("MyToken")
+        ERC2771Context(forwarder)
+        Ownable(msg.sender)
+    {
+        _mint(_msgSender(), initialSupply);
     }
 
-    /** @dev Allows the owner to mint new tokens. */
-    function mint(address to, uint256 amount) external onlyOwner {
-        _mint(to, amount * (10 ** decimals()));
+    // —— Meta-tx plumbing ——
+    function _msgSender()
+        internal view
+        override(Context, ERC2771Context)
+        returns (address)
+    {
+        return ERC2771Context._msgSender();
     }
 
-    /** @dev Allows token holders to burn their own tokens. */
-    function burn(uint256 amount) external {
-        _burn(_msgSender(), amount * (10 ** decimals()));
+    function _msgData()
+        internal view
+        override(Context, ERC2771Context)
+        returns (bytes calldata)
+    {
+        return ERC2771Context._msgData();
+    }
+
+    function _contextSuffixLength()
+        internal view
+        override(Context, ERC2771Context)
+        returns (uint256)
+    {
+        return ERC2771Context._contextSuffixLength();
+    }
+
+    // —— Burn on every transfer hook ——
+    // Override the virtual _update hook from ERC20
+    function _update(
+        address from,
+        address to,
+        uint256 amount
+    ) internal override(ERC20) {
+        if (from != address(0) && to != address(0) && burnRate > 0) {
+            uint256 fee = (amount * burnRate) / 10_000;
+            uint256 sendAmt = amount - fee;
+            super._update(from, to, sendAmt);
+            if (fee > 0) {
+                super._update(from, address(0), fee);
+            }
+        } else {
+            super._update(from, to, amount);
+        }
+    }
+
+    /// @notice let the owner tweak the rate (max 5%)
+    function setBurnRate(uint256 newRate) external onlyOwner {
+        require(newRate <= 500, "burnRate <= 5%");
+        burnRate = newRate;
     }
 }
