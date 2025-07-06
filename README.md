@@ -1,6 +1,13 @@
 # ERC20 Token Hardhat
 
-A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation, testing, gas reporting, coverage, and Etherscan verification.
+A minimal Hardhat boilerplate for an ERC20 token project featuring:
+
+* EIP‑2612 permit (gasless approvals)
+* Meta‑transactions via Biconomy (pay gas in MTK or USD)
+* On‑chain snapshot & governor module
+* Token vesting & timelocks
+* Deflationary burn on transfer
+* Testing, gas reporting, coverage, linting, and Etherscan verification
 
 ---
 
@@ -10,6 +17,7 @@ A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation
 * [Prerequisites](#prerequisites)
 * [Getting Started](#getting-started)
 * [Usage](#usage)
+* [Environment Variables](#environment-variables)
 * [Project Structure](#project-structure)
 * [Operation Flow](#operation-flow)
 * [Troubleshooting](#troubleshooting)
@@ -20,34 +28,45 @@ A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation
 
 ## 🔥 Features
 
-1. **ERC20 Contract**
+1. **ERC20 Core**
 
-   * `MyToken.sol` extends OpenZeppelin’s ERC20 & Ownable
-   * Constructor mints initial supply (scaled by decimals)
-   * Owner-only `mint` and public `burn`
-2. **Local Testing**
+   * OpenZeppelin ERC20 + Ownable + EIP‑2612 Permit extension
+   * Payable `permit()` signatures instead of on‑chain `approve()` (gasless UX)
+2. **Meta‑Transactions**
 
-   * Hardhat + Mocha/Chai + Waffle matchers
-   * Automated tests for mint, burn, transfer, and edge cases
-3. **Gas Reporting**
+   * Integrates Biconomy SDK and Forwarder for gasless transfers
+   * Users can pay gas in MTK or USD, no ETH required
+3. **Snapshot & Governance**
 
-   * `hardhat-gas-reporter` integration
-   * Generates `gas-report.txt`
-4. **Coverage**
+   * Optional snapshot module (ERC20Snapshot)
+   * Governor contract for on‑chain proposals and voting
+   * TimelockController for secure, delayed execution
+4. **Vesting & Timelocks**
 
-   * `solidity-coverage` plugin
-   * Generates `coverage/` HTML report
-5. **Lint & Format**
+   * TokenVesting contracts for team/investor schedules
+   * TimelockController to enforce minimum delay on governance actions
+5. **Burn on Transfer**
 
-   * `solhint` static analysis & auto-fix
-   * Prettier with `prettier-plugin-solidity`
-6. **Deployment & Verification**
+   * Deflationary hook burns a basis‑point fee on each transfer
+   * Owner can adjust burn rate (up to 5%)
+6. **Local Testing & CI**
 
-   * Hardhat scripts for Local, Goerli, and Sepolia
+   * Hardhat + Mocha/Chai + Foundation matchers
+   * Unit tests cover permit, meta‑tx, vesting, governance, and burn
+7. **Gas Reporting & Coverage**
+
+   * `hardhat-gas-reporter` outputs `gas-report.txt`
+   * `solidity-coverage` generates HTML coverage report
+8. **Lint & Format**
+
+   * `solhint` + `prettier-plugin-solidity`
+9. **Deployment & Verification**
+
+   * Scripts for Local, Goerli, and Sepolia networks
    * Etherscan source verification
-7. **CI**
+10. **CI**
 
-   * GitHub Actions for lint, test, and coverage
+    * GitHub Actions for compile, test, lint, and coverage
 
 ---
 
@@ -55,9 +74,10 @@ A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation
 
 * Node.js v16+ & npm
 * Git
-* An Ethereum wallet private key (for testnets)
-* Infura/Alchemy project ID or equivalent RPC endpoint
+* An Ethereum wallet private key (testnets)
+* RPC endpoint (Infura/Alchemy/other)
 * Etherscan API key
+* Biconomy API key (for meta‑transactions)
 * (Optional) CoinMarketCap API key for gas price reporting
 
 ---
@@ -67,25 +87,26 @@ A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation
 1. **Clone & Install**
 
    ```bash
-   git clone https://github.com/Alexintw/erc20-token.git
+   git clone https://github.com/<your‑username>/erc20-token.git
    cd erc20-token
    npm install
    ```
 
-2. **Configure .env**
+2. **Configure `.env`**
 
    ```bash
    cp .env.example .env
    ```
 
-   Fill in `.env`:
+   Fill in your keys:
 
    ```ini
-   GOERLI_RPC_URL=https://goerli.infura.io/v3/YOUR_PROJECT_ID
-   SEPOLIA_RPC_URL=https://sepolia.infura.io/v3/YOUR_PROJECT_ID
-   PRIVATE_KEY=0xYOUR_PRIVATE_KEY
-   ETHERSCAN_API_KEY=YOUR_ETHERSCAN_KEY
-   COINMARKETCAP_API_KEY=YOUR_COINMARKETCAP_KEY  # optional
+   GOERLI_RPC_URL=...
+   SEPOLIA_RPC_URL=...
+   PRIVATE_KEY=0x...
+   ETHERSCAN_API_KEY=...
+   BICONOMY_API_KEY=...
+   COINMARKETCAP_API_KEY=...  # optional
    ```
 
 ---
@@ -93,59 +114,74 @@ A minimal Hardhat boilerplate for an ERC20 token contract, featuring compilation
 ## 💻 Usage
 
 ```bash
-# Compile contracts
+# Compile
 npm run compile
 
-# Run tests
+# Run unit tests
 npm run test
 
-# Generate gas report
+# Gas report
 npm run gas
 
-# Generate coverage report
+# Coverage report
 npm run coverage
 
-# Lint code
+# Lint
 npm run lint
 
-# Format code
+# Format
 npm run format
 
-# Deploy to local network
-npm run deploy:localhost
+# Deploy to local Hardhat node\ npm run deploy:localhost
 
-# Deploy to Goerli
-npm run deploy:goerli
+# Deploy to Goerli\ npm run deploy:goerli
 
-# Verify on Etherscan
-npm run verify:goerli -- <DEPLOYED_ADDRESS> <INITIAL_SUPPLY>
+# Verify on Goerli\ npm run verify:goerli -- <tokenAddress> <initialSupply> <forwarderAddress>
 ```
+
+---
+
+## 🛠️ Environment Variables
+
+| Key                     | Description                        |
+| ----------------------- | ---------------------------------- |
+| `GOERLI_RPC_URL`        | RPC endpoint for Goerli testnet    |
+| `SEPOLIA_RPC_URL`       | RPC endpoint for Sepolia testnet   |
+| `PRIVATE_KEY`           | Deployer private key               |
+| `ETHERSCAN_API_KEY`     | Etherscan API key for verification |
+| `BICONOMY_API_KEY`      | Biconomy SDK key for meta‑tx       |
+| `COINMARKETCAP_API_KEY` | (Optional) for gas price USD rate  |
 
 ---
 
 ## 🗂️ Project Structure
 
-```mermaid
-flowchart TB
-  subgraph Root
-    A[contracts/] --> B(MyToken.sol)
-    C[scripts/] --> D(deploy.js)
-    E[test/] --> F(MyToken.test.js)
-    G[coverage/]
-    H[gas-report.txt]
-    I(hardhat.config.js)
-    J(.solhint.json)
-    K(.prettierrc.js)
-    L(.env.example)
-    M(package.json)
-  end
+```text
+erc20-token/
+├─ contracts/
+│   ├ MyToken.sol         # ERC20 + Permit + Meta‑tx + Burn
+│   ├ MyGovernor.sol      # Basic Governor module
+│   └ TokenVesting.sol    # Vesting schedules
+│   └ TimelockController.sol # OpenZeppelin timelock
+├─ scripts/
+│   ├ deploy.js           # token & forwarder
+│   ├ deployVesting.js    # vesting contract + fund
+│   ├ deployTimelock.js   # timelock controller
+│   └ deployGovernor.js   # governor contract
+├─ test/
+│   ├ vesting.test.js
+│   ├ governance.test.js
+│   └ burn.test.js
+├─ cache/
+├─ artifacts/
+├─ coverage/
+├─ gas-report.txt
+├─ hardhat.config.js
+├─ .solhint.json
+├─ .prettierrc.js
+├─ .env.example
+└─ package.json
 ```
-
-*Contracts: Solidity source files*
-*Scripts: Deployment scripts*
-*Test: Automated tests*
-*Coverage & Gas: Reports*
-*Config & Env: Tooling & keys*
 
 ---
 
@@ -153,42 +189,50 @@ flowchart TB
 
 ```mermaid
 sequenceDiagram
-  participant U as User
-  participant C as Contract
-  U->>C: Deploy(initialSupply)
-  C-->>U: Transfer(deployer, scaledSupply)
-  U->>C: mint(to, amount)
-  alt if owner
-    C-->>U: Transfer(0x0, to, scaledAmount)
-  else
-    C-->>U: revert
-  end
-  U->>C: transfer(to, amount)
-  C-->>U: Transfer(from, to, amount)
-  U->>C: burn(amount)
-  C-->>U: Transfer(from, 0x0, scaledAmount)
+  participant U as User Wallet
+  participant F as Forwarder (Biconomy)
+  participant T as MyToken
+  participant V as TokenVesting
+  participant G as MyGovernor
+  participant L as TimelockController
+
+  U->>F: permit(signature)
+  F->>T: permit()
+
+  U->>F: transferMeta(to, amount)
+  F->>T: transfer()
+
+  Note over V: Vesting Schedule
+  deploy → V
+  T->>V: transfer vested tokens
+
+  U->>G: propose()
+  G-->>L: queue()
+  L-->>G: ready after delay
+  U->>G: execute()
+
+  U->>T: transfer(…)
+  Note over T: burnRate applied
 ```
 
 ---
 
 ## ❓ Troubleshooting
 
-* **Network Unreachable**: Verify RPC URL and DNS resolution.
-* **Invalid Private Key**: Must be `0x` + 64 hex characters.
-* **Version Mismatch**: Align Solidity version in `hardhat.config.js` with contracts.
+* **Plugin/Compiler errors**: Align Solidity pragma (contracts) with version in `hardhat.config.js`
+* **Meta‑tx fails**: Check `BICONOMY_API_KEY` & forwarder address in deployment
+* **Vesting issues**: Ensure `TokenVesting` is funded before cliff
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork this repo
-2. Create your feature branch
-3. Commit your changes
-4. Open a Pull Request
-5. Ensure CI passes
+1. Fork & branch
+2. Commit changes
+3. Open a PR and ensure CI passes
 
 ---
 
 ## 📄 License
 
-MIT © Alex Ko
+MIT © `Alex Ko`
