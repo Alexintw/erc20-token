@@ -1,0 +1,10 @@
+graph LR
+  A("Off-chain Permit: User signs EIP-2612 permit") --> B("Meta-tx Relay: Biconomy forwarder submits permit() and pays gas")
+  B --> C("Meta-transfer: User calls transferMeta(to, amount) via Biconomy SDK")
+  C --> D("Token Transfer: Forwarder executes transfer() on MyToken, burning fee")
+  D --> E("Vesting Deployment: Deployment script funds TokenVesting with vested tokens")
+  E --> F("Governance Proposal: User calls MyGovernor.propose(...) to create a proposal")
+  F --> G("Queue via Timelock: Governor queues execution through TimelockController")
+  G --> H("Delay Period: Timelock enforces the configured delay before execution")
+  H --> I("Execute Proposal: User invokes MyGovernor.execute(...) to enact changes")
+  I --> J("Deflationary Burn: Every transfer applies the burn rate automatically")

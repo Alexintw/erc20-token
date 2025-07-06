@@ -186,27 +186,7 @@ erc20-token/
 ---
 
 ## 🔄 Architecture
-flowchart LR
-  A[Off-chain Permit<br/>User signs EIP-2612 permit] --> B[Meta-transaction Relay<br/>Biconomy forwarder submits permit() and pays gas]
-  B --> C[Meta-transfer<br/>User requests transferMeta(to, amount) via Biconomy SDK]
-  C --> D[Token Transfer<br/>Forwarder executes transfer() on MyToken, burning fee]
-  D --> E[Vesting Deployment<br/>Deployment script funds TokenVesting with vested tokens]
-  E --> F[Governance Proposal<br/>User calls MyGovernor.propose(...) to create a proposal]
-  F --> G[Queue via Timelock<br/>Governor queues execution through TimelockController]
-  G --> H[Delay Period<br/>Timelock enforces the configured delay before execution]
-  H --> I[Execute Proposal<br/>User invokes MyGovernor.execute(...) to enact changes]
-  I --> J[Deflationary Burn<br/>Every transfer applies the burn rate automatically]
-```mermaid
-flowchart LR
-  A[Off-chain Permit<br/>User signs EIP-2612 permit] --> B[Meta-transaction Relay<br/>Biconomy forwarder submits `permit()` and pays gas]
-  B --> C[Meta-transfer<br/>User requests `transferMeta(to, amount)` via Biconomy SDK]
-  C --> D[Token Transfer<br/>Forwarder executes `transfer()` on `MyToken`, burning fee]
-  D --> E[Vesting Deployment<br/>Deployment script funds `TokenVesting` with vested tokens]
-  E --> F[Governance Proposal<br/>User calls `MyGovernor.propose(...)` to create a proposal]
-  F --> G[Queue via Timelock<br/>Governor queues execution through `TimelockController`]
-  G --> H[Delay Period<br/>Timelock enforces the configured delay before execution]
-  H --> I[Execute Proposal<br/>User invokes `MyGovernor.execute(...)` to enact changes]
-  I --> J[Deflationary Burn<br/>Every transfer applies the burn rate automatically]
+![System Interaction Flow](docs/architecture.svg)
 ---
 
 ## ❓ Troubleshooting
