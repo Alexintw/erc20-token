@@ -185,36 +185,18 @@ erc20-token/
 
 ---
 
-## 🔄 Operation Flow
+## 🔄 Architecture
 
-```mermaid
-sequenceDiagram
-  participant U as User Wallet
-  participant F as Forwarder (Biconomy)
-  participant T as MyToken
-  participant V as TokenVesting
-  participant G as MyGovernor
-  participant L as TimelockController
-
-  U->>F: permit(signature)
-  F->>T: permit()
-
-  U->>F: transferMeta(to, amount)
-  F->>T: transfer()
-
-  Note over V: Vesting Schedule
-  deploy → V
-  T->>V: transfer vested tokens
-
-  U->>G: propose()
-  G-->>L: queue()
-  L-->>G: ready after delay
-  U->>G: execute()
-
-  U->>T: transfer(…)
-  Note over T: burnRate applied
-```
-
+flowchart LR
+  A[Off-chain Permit<br/>User signs EIP-2612 permit] --> B[Meta-transaction Relay<br/>Biconomy forwarder submits `permit()` and pays gas]
+  B --> C[Meta-transfer<br/>User requests `transferMeta(to, amount)` via Biconomy SDK]
+  C --> D[Token Transfer<br/>Forwarder executes `transfer()` on `MyToken`, burning fee]
+  D --> E[Vesting Deployment<br/>Deployment script funds `TokenVesting` with vested tokens]
+  E --> F[Governance Proposal<br/>User calls `MyGovernor.propose(...)` to create a proposal]
+  F --> G[Queue via Timelock<br/>Governor queues execution through `TimelockController`]
+  G --> H[Delay Period<br/>Timelock enforces the configured delay before execution]
+  H --> I[Execute Proposal<br/>User invokes `MyGovernor.execute(...)` to enact changes]
+  I --> J[Deflationary Burn<br/>Every transfer applies the burn rate automatically]
 ---
 
 ## ❓ Troubleshooting
